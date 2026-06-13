@@ -31,8 +31,8 @@ export function TourHeroClean() {
           playsInline
           className="w-full h-full object-cover"
         >
-          <source src="/images/videos/tours-bg.mov" type="video/quicktime" />
-          <source src="/images/videos/tours-bg.mp4" type="video/mp4" />
+          <source src="https://tourplatform-bg-videos.sfo3.cdn.digitaloceanspaces.com/tours-bg.mov" type="video/quicktime" />
+          <source src="https://tourplatform-bg-videos.sfo3.cdn.digitaloceanspaces.com/tours-bg.mp4" type="video/mp4" />
         </video>
         <div className="absolute inset-0 bg-black/40" />
       </div>

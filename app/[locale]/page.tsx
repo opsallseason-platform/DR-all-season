@@ -152,8 +152,8 @@ export default async function Home({ params }: { params: { locale: string } }) {
             playsInline
             className="w-full h-full object-cover"
           >
-            <source src="/images/videos/home-bg.mov" type="video/quicktime" />
-            <source src="/images/videos/home-bg.mp4" type="video/mp4" />
+            <source src="https://tourplatform-bg-videos.sfo3.cdn.digitaloceanspaces.com/home-bg.mov" type="video/quicktime" />
+            <source src="https://tourplatform-bg-videos.sfo3.cdn.digitaloceanspaces.com/home-bg.mp4" type="video/mp4" />
           </video>
           <div className="absolute inset-0 bg-black/40" />
         </div>

@@ -39,8 +39,8 @@ export default function AboutPage() {
           playsInline
           className="w-full h-full object-cover"
         >
-          <source src="/images/videos/bg-about.mov" type="video/quicktime" />
-          <source src="/images/videos/bg-about.mp4" type="video/mp4" />
+          <source src="https://tourplatform-bg-videos.sfo3.cdn.digitaloceanspaces.com/bg-about.mov" type="video/quicktime" />
+          <source src="https://tourplatform-bg-videos.sfo3.cdn.digitaloceanspaces.com/bg-about.mp4" type="video/mp4" />
         </video>
         {/* Dark overlay for text readability */}
         <div className="absolute inset-0 bg-black/50" />

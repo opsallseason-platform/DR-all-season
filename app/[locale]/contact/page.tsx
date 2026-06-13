@@ -37,8 +37,8 @@ export default function ContactPage() {
           playsInline
           className="w-full h-full object-cover"
         >
-          <source src="/images/videos/bg-contact.mov" type="video/quicktime" />
-          <source src="/images/videos/bg-contact.mp4" type="video/mp4" />
+          <source src="https://tourplatform-bg-videos.sfo3.cdn.digitaloceanspaces.com/bg-contact.mov" type="video/quicktime" />
+          <source src="https://tourplatform-bg-videos.sfo3.cdn.digitaloceanspaces.com/bg-contact.mp4" type="video/mp4" />
         </video>
         <div className="absolute inset-0 bg-black/50" />
       </div>

@@ -46,8 +46,8 @@ export default function TransfersPageClient() {
           playsInline
           className="w-full h-full object-cover"
         >
-          <source src="/images/videos/transfers-bg.mov" type="video/quicktime" />
-          <source src="/images/videos/transfers-bg.mp4" type="video/mp4" />
+          <source src="https://tourplatform-bg-videos.sfo3.cdn.digitaloceanspaces.com/transfers-bg.mov" type="video/quicktime" />
+          <source src="https://tourplatform-bg-videos.sfo3.cdn.digitaloceanspaces.com/transfers-bg.mp4" type="video/mp4" />
         </video>
         <div className="absolute inset-0 bg-black/40" />
       </div>
