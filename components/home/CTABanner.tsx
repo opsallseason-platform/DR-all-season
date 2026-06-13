@@ -26,12 +26,13 @@ export function CTABanner() {
 
   return (
     <section className="py-32 md:py-40 text-white" ref={sectionRef}>
-      <motion.div className="container mx-auto px-6 text-center max-w-4xl" style={{ y, opacity }}>
+      <div className="container mx-auto px-6 text-center max-w-4xl">
+        <motion.div style={{ y, opacity }}>
         <p className="text-sm tracking-[0.3em] uppercase text-white/60 mb-6">
           {t('subtitle')}
         </p>
         
-        <h2 className="text-4xl md:text-6xl lg:text-7xl font-light mb-8 leading-tight overflow-visible">
+        <h2 className="text-4xl md:text-6xl lg:text-7xl font-light mb-8 leading-tight">
           {t('titleLine1')}
           <br />
           <span className="italic font-normal bg-gradient-to-r from-white via-gray-300 to-white bg-clip-text text-transparent">
@@ -95,7 +96,8 @@ export function CTABanner() {
             info@drallseasontravel.com
           </motion.a>
         </div>
-      </motion.div>
+        </motion.div>
+      </div>
     </section>
   );
 }
