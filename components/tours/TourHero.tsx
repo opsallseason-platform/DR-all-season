@@ -29,6 +29,8 @@ export function TourHeroClean() {
           loop
           muted
           playsInline
+          webkit-playsInline
+          preload="auto"
           className="w-full h-full object-cover"
         >
           <source src="https://tourplatform-bg-videos.sfo3.cdn.digitaloceanspaces.com/tours-bg.mp4" type="video/mp4" />

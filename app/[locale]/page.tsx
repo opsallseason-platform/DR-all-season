@@ -150,16 +150,9 @@ export default async function Home({ params }: { params: { locale: string } }) {
             loop
             muted
             playsInline
-            style={{
-              position: 'absolute',
-              top: '50%',
-              left: '50%',
-              minWidth: '100vw',
-              minHeight: '100vh',
-              width: 'auto',
-              height: 'auto',
-              transform: 'translate(-50%, -50%)',
-            }}
+            webkit-playsInline
+            preload="auto"
+            className="w-full h-full object-cover"
           >
             <source src="https://tourplatform-bg-videos.sfo3.cdn.digitaloceanspaces.com/home-bg.mp4" type="video/mp4" />
           </video>
