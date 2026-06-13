@@ -142,7 +142,7 @@ export default async function Home({ params }: { params: { locale: string } }) {
       <FeaturedServices services={featuredServices} />
       
       {/* Video Background Section */}
-      <div className="relative min-h-screen overflow-hidden">
+      <div className="relative">
         {/* Fixed Video Background for These 3 Sections */}
         <div className="absolute inset-0 w-full h-full">
           <video

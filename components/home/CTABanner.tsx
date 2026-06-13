@@ -31,7 +31,7 @@ export function CTABanner() {
           {t('subtitle')}
         </p>
         
-        <h2 className="text-4xl md:text-6xl lg:text-7xl font-light mb-8 leading-tight">
+        <h2 className="text-4xl md:text-6xl lg:text-7xl font-light mb-8 leading-tight overflow-visible">
           {t('titleLine1')}
           <br />
           <span className="italic font-normal bg-gradient-to-r from-white via-gray-300 to-white bg-clip-text text-transparent">
