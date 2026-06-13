@@ -26,16 +26,15 @@ export function VideoBackgroundMobile({ src, hevcSrc }: VideoBackgroundMobilePro
   }, []);
 
   return (
-    <div className="absolute inset-0 w-full h-full">
+    <div className="absolute inset-0 h-full w-full overflow-hidden bg-black">
       <video
         ref={videoRef}
         autoPlay
         loop
         muted
         playsInline
-        webkit-playsInline
         preload="auto"
-        className="w-full h-full object-cover"
+        className="h-full w-full scale-[1.08] object-cover md:scale-[1.1]"
       >
         {hevcSrc ? <source src={hevcSrc} type='video/mp4; codecs="hvc1"' /> : null}
         <source src={src} type="video/mp4" />
