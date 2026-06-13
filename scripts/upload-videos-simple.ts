@@ -21,8 +21,8 @@ const spacesClient = new S3({
 
 const bucketName = 'tourplatform-bg-videos';
 
-async function uploadVideo(filename: string) {
-  const filePath = path.join(process.cwd(), 'public/images/videos', filename);
+async function uploadVideo(filename: string, videosDir: string) {
+  const filePath = path.join(videosDir, filename);
   
   if (!fs.existsSync(filePath)) {
     console.log(`⚠️  ${filename} not found, skipping...`);
@@ -39,7 +39,7 @@ async function uploadVideo(filename: string) {
       Bucket: bucketName,
       Key: filename,
       Body: fileBuffer,
-      ContentType: 'video/quicktime',
+      ContentType: 'video/mp4',
     });
     
     const videoUrl = `https://tourplatform-bg-videos.sfo3.cdn.digitaloceanspaces.com/${filename}`;
@@ -57,18 +57,20 @@ async function uploadVideo(filename: string) {
 
 async function main() {
   const videos = [
-    'home-bg.mov',
-    'tours-bg.mov', 
-    'transfers-bg.mov',
-    'bg-about.mov',
-    'bg-contact.mov',
+    'home-bg.mp4',
+    'tours-bg.mp4', 
+    'transfers-bg.mp4',
+    'bg-about.mp4',
+    'bg-contact.mp4',
   ];
+
+  const videosDir = path.join(process.cwd(), 'public/images/videos/compressed');
 
   console.log('🚀 Starting video uploads to DigitalOcean Spaces...\n');
   console.log(`Bucket: ${bucketName}\n`);
 
   for (const video of videos) {
-    await uploadVideo(video);
+    await uploadVideo(video, videosDir);
   }
 
   console.log('\n✅ Upload process complete!');
