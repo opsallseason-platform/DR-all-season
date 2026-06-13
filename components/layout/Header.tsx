@@ -155,6 +155,32 @@ export function Header() {
             >
               {t('contact')}
             </Link>
+            
+            {/* Language Toggle - Mobile */}
+            <div className="flex items-center space-x-3 py-4 border-t border-gray-200 mt-4">
+              <span className="text-sm text-gray-600">Language:</span>
+              <button 
+                onClick={() => { switchLanguage('en'); setIsMenuOpen(false); }}
+                className={`px-4 py-2 text-sm font-light tracking-wider rounded-lg transition-colors ${
+                  locale === 'en' 
+                    ? 'bg-gray-900 text-white' 
+                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                }`}
+              >
+                EN
+              </button>
+              <button 
+                onClick={() => { switchLanguage('es'); setIsMenuOpen(false); }}
+                className={`px-4 py-2 text-sm font-light tracking-wider rounded-lg transition-colors ${
+                  locale === 'es' 
+                    ? 'bg-gray-900 text-white' 
+                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                }`}
+              >
+                ES
+              </button>
+            </div>
+            
             <div className="pt-4 mt-4 border-t border-gray-200">
               <Link href="/tours">
                 <Button variant="primary" className="w-full bg-gray-900 text-white hover:bg-gray-800 rounded-2xl py-3 font-normal tracking-wide">
