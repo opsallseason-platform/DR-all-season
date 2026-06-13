@@ -1,0 +1,39 @@
+import createMiddleware from 'next-intl/middleware';
+import { NextRequest } from 'next/server';
+import { updateSession } from '@/lib/supabase/middleware';
+
+export default async function middleware(req: NextRequest) {
+  // First run Supabase session update
+  const supabaseResponse = await updateSession(req);
+  
+  // If Supabase middleware returned a response (e.g., redirect), use it
+  if (supabaseResponse && supabaseResponse.status >= 300 && supabaseResponse.status < 400) {
+    return supabaseResponse;
+  }
+  
+  // Then run next-intl middleware
+  try {
+    const nextIntlResponse = createMiddleware({
+      // A list of all locales that are supported
+      locales: ['en', 'es'],
+      
+      // Used when no locale matches
+      defaultLocale: 'en',
+    })(req);
+    
+    // If next-intl returns a response (like a redirect), return it
+    if (nextIntlResponse) {
+      return nextIntlResponse;
+    }
+  } catch (error) {
+    console.error('Error in next-intl middleware:', error);
+  }
+  
+  // Otherwise, return the supabase response
+  return supabaseResponse;
+}
+
+export const config = {
+  // Match only internationalized pathnames
+  matcher: ['/((?!api|_next|.*\\.\\..*).*)'],
+};

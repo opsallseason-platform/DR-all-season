@@ -1,0 +1,41 @@
+@import url('https://fonts.googleapis.com/css2?family=Island+Moments&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Smooth scrolling for the entire app */
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-inter), sans-serif;
+}
+
+/* Clean custom class for only the word "Paradise" */
+
+.font-paradise {
+  font-family: 'Island Moments', cursive !important;
+ letter-spacing: 0.05em;
+font-size: 1.25em;        /* 15% boost so it matches the weight of the bold text */
+  display: inline-block;  
+  position: relative;
+top: 0.05em;
+text-shadow: 0 0 12px rgba(0, 220, 200, 0.25);
+  /* keeps spacing consistent */
+}
+
+.font-paradise-soft {
+  font-family: 'Island Moments', cursive !important;
+  letter-spacing: 0.03em;
+  font-size: 1.1em;
+  line-height: 1.2;
+  display: inline-block;
+}
+
+
+.text-golden-sand {
+  color: #F4A460; 
+  text-shadow: 0 0 8px rgba(233, 206, 137, 0.3);
+}
