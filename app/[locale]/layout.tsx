@@ -5,6 +5,7 @@ import {NextIntlClientProvider} from 'next-intl';
 import {getMessages} from 'next-intl/server';
 import {routing} from '@/i18n/routing';
 import ChatWidget from '@/components/chat/ChatWidget';
+import { CookieConsent } from '@/components/privacy/CookieConsent';
 import { getBaseUrl } from '@/lib/seo/metadata';
 import type { Metadata } from 'next';
 
@@ -83,6 +84,7 @@ export default async function LocaleLayout({children, params: {locale}}: Props) 
     <NextIntlClientProvider messages={messages}>
       {children}
       <ChatWidget />
+      <CookieConsent />
     </NextIntlClientProvider>
   );
 }

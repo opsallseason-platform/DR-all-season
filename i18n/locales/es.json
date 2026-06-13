@@ -77,12 +77,21 @@
     "support": "Soporte",
     "contact": "Contacto",
     "faq": "Preguntas Frecuentes",
+    "joinInCruises": "Únete a inCruises",
     "legal": "Legal",
     "privacyPolicy": "Política de Privacidad",
     "termsOfService": "Términos de Servicio",
     "getInTouch": "Contactar",
     "location": "Punta Cana, República Dominicana",
     "copyright": "© 2024 D.R All Season Travel. Todos los derechos reservados."
+  },
+  "CookieConsent": {
+    "title": "Preferencias de cookies",
+    "description": "Usamos cookies esenciales para el funcionamiento del sitio y cookies opcionales para mejorar tu experiencia. Obtén más información en nuestra",
+    "privacyPolicy": "Política de Privacidad.",
+    "consentLabel": "Acepto el uso de cookies opcionales.",
+    "essentialOnly": "Solo esenciales",
+    "accept": "Aceptar cookies"
   },
   "Transfers": {
     "subtitle": "Traslados",
@@ -227,6 +236,9 @@
     "browseServices": "Ver Servicios",
     "bookingDetails": "Detalles de la Reserva",
     "selectDate": "Seleccionar Fecha",
+    "inCruisesCalloutTitle": "¿Planeas viajar más?",
+    "inCruisesCalloutDescription": "Regístrate para obtener los beneficios de membresía de viajes de inCruises.",
+    "joinInCruises": "Únete a inCruises",
     "processing": "Procesando...",
     "continueToPayment": "Continuar al Pago",
         "submitBooking": "Enviar Reserva",

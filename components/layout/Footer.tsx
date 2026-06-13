@@ -4,6 +4,9 @@ import React from 'react';
 import Image from 'next/image';
 import {Link} from '@/i18n/routing';
 import { useTranslations } from 'next-intl';
+import { ExternalLink } from 'lucide-react';
+
+const INCRUISES_SIGNUP_URL = 'https://alfredocorniel.incruises.com';
 
 export function Footer() {
   const t = useTranslations('Footer');
@@ -59,6 +62,17 @@ export function Footer() {
                 <Link href="/faq" className="text-gray-400 hover:text-white transition-colors font-light">
                   {t('faq')}
                 </Link>
+              </li>
+              <li>
+                <a
+                  href={INCRUISES_SIGNUP_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1.5 text-gray-400 hover:text-white transition-colors font-light"
+                >
+                  {t('joinInCruises')}
+                  <ExternalLink className="h-3.5 w-3.5" aria-hidden="true" />
+                </a>
               </li>
             </ul>
           </div>

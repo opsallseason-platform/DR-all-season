@@ -13,6 +13,9 @@ import { useState, useEffect } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { useTranslations } from 'next-intl';
+import { ExternalLink } from 'lucide-react';
+
+const INCRUISES_SIGNUP_URL = 'https://alfredocorniel.incruises.com';
 
 interface ContactFormData {
   firstName: string;
@@ -364,6 +367,22 @@ function BookingPageContent({ service }: { service: Service }) {
                   onFormDataChange={setContactForm}
                   isTransfer={service.category === 'transfer'}
                 />
+
+                <aside className="flex flex-col gap-3 border-l-2 border-blue-400 bg-blue-500/10 px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
+                  <p className="text-sm font-light leading-relaxed text-white/70">
+                    <span className="font-normal text-white">{t('inCruisesCalloutTitle')}</span>{' '}
+                    {t('inCruisesCalloutDescription')}
+                  </p>
+                  <a
+                    href={INCRUISES_SIGNUP_URL}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex shrink-0 items-center gap-1.5 text-sm font-medium text-blue-300 transition-colors hover:text-blue-200"
+                  >
+                    {t('joinInCruises')}
+                    <ExternalLink className="h-4 w-4" aria-hidden="true" />
+                  </a>
+                </aside>
               </div>
               
               <div className="flex justify-end mt-8">
