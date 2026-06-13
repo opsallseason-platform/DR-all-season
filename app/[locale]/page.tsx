@@ -143,7 +143,7 @@ export default async function Home({ params }: { params: { locale: string } }) {
       <FeaturedServices services={featuredServices} />
       
       {/* Video Background Section */}
-      <div className="relative">
+      <div className="relative min-h-screen">
         {/* Fixed Video Background for These 3 Sections */}
         <VideoBackgroundMobile src="https://tourplatform-bg-videos.sfo3.cdn.digitaloceanspaces.com/home-bg.mp4" />
         
