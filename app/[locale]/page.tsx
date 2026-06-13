@@ -142,7 +142,7 @@ export default async function Home({ params }: { params: { locale: string } }) {
       <FeaturedServices services={featuredServices} />
       
       {/* Video Background Section */}
-      <div className="relative min-h-screen">
+      <div className="relative min-h-screen overflow-hidden">
         {/* Fixed Video Background for These 3 Sections */}
         <div className="absolute inset-0 w-full h-full">
           <video
@@ -150,7 +150,7 @@ export default async function Home({ params }: { params: { locale: string } }) {
             loop
             muted
             playsInline
-            className="absolute top-1/2 left-1/2 min-w-full min-h-full w-auto h-auto -translate-x-1/2 -translate-y-1/2 object-cover"
+            className="w-full h-full object-cover"
           >
             <source src="https://tourplatform-bg-videos.sfo3.cdn.digitaloceanspaces.com/home-bg.mp4" type="video/mp4" />
           </video>
