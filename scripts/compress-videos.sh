@@ -1,13 +1,13 @@
 #!/bin/bash
-# Compress videos to web-optimized MP4 (High Quality: 20-30MB)
-# Settings: 1080p, 3Mbps bitrate, H.264 codec
+# Compress videos to web-optimized MP4 (Mobile-Safe)
+# Settings: 1080p, 30fps, H.264 Main Profile, yuv420p (iOS/Android compatible)
 
 VIDEOS_DIR="public/images/videos"
 COMPRESSED_DIR="$VIDEOS_DIR/compressed"
 
 mkdir -p "$COMPRESSED_DIR"
 
-echo "🎬 Starting video compression..."
+echo "🎬 Starting video compression (mobile-safe encoding)..."
 echo "📁 Output directory: $COMPRESSED_DIR"
 echo ""
 
@@ -20,15 +20,15 @@ compress_video() {
   echo "   Output: ${filename}.mp4"
   
   ffmpeg -i "$input" \
-    -vf "scale=1920:1080:force_original_aspect_ratio=decrease,pad=1920:1080:(ow-iw)/2:(oh-ih)/2" \
+    -vf "scale=1920:1080:force_original_aspect_ratio=decrease,pad=1920:1080:(ow-iw)/2:(oh-ih)/2,fps=30" \
     -c:v libx264 \
+    -profile:v main \
+    -level 4.0 \
+    -pix_fmt yuv420p \
     -preset medium \
     -crf 23 \
-    -maxrate 3M \
-    -bufsize 6M \
-    -c:a aac \
-    -b:a 128k \
     -movflags +faststart \
+    -an \
     -y \
     "$output"
   

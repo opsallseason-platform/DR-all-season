@@ -5,8 +5,11 @@
 
 import { S3 } from '@aws-sdk/client-s3';
 import { Upload } from '@aws-sdk/lib-storage';
+import { config } from 'dotenv';
 import fs from 'fs';
 import path from 'path';
+
+config({ path: path.resolve(process.cwd(), '.env.local') });
 
 const spacesClient = new S3({
   endpoint: 'https://sfo3.digitaloceanspaces.com',
@@ -19,14 +22,14 @@ const spacesClient = new S3({
 });
 
 const bucketName = process.env.DO_SPACES_BUCKET || 'tourplatform-bg-videos';
-const videosDir = path.join(process.cwd(), 'public/images/videos');
+const videosDir = path.join(process.cwd(), 'public/images/videos/compressed');
 
 const videos = [
-  'home-bg.mov',
-  'tours-bg.mov',
-  'transfers-bg.mov',
-  'bg-about.mov',
-  'bg-contact.mov',
+  'home-bg.mp4',
+  'tours-bg.mp4',
+  'transfers-bg.mp4',
+  'bg-about.mp4',
+  'bg-contact.mp4',
 ];
 
 async function uploadVideo(filename: string) {
@@ -49,7 +52,8 @@ async function uploadVideo(filename: string) {
         Bucket: bucketName,
         Key: filename,
         Body: fileStream,
-        ContentType: 'video/quicktime',
+        ContentType: 'video/mp4',
+        CacheControl: 'public, max-age=300, must-revalidate',
         // Note: DigitalOcean Spaces doesn't support ACL - make bucket public in settings
       },
     });

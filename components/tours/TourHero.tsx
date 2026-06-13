@@ -33,7 +33,7 @@ export function TourHeroClean() {
           preload="auto"
           className="w-full h-full object-cover"
         >
-          <source src="https://tourplatform-bg-videos.sfo3.cdn.digitaloceanspaces.com/tours-bg.mp4" type="video/mp4" />
+          <source src="https://tourplatform-bg-videos.sfo3.cdn.digitaloceanspaces.com/tours-bg.mp4?v=mobile-safe-20260613" type="video/mp4" />
         </video>
         <div className="absolute inset-0 bg-black/40" />
       </div>
