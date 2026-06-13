@@ -150,6 +150,7 @@ export default async function Home({ params }: { params: { locale: string } }) {
             loop
             muted
             playsInline
+            preload="auto"
             className="w-full h-full object-cover"
           >
             <source src="https://tourplatform-bg-videos.sfo3.cdn.digitaloceanspaces.com/home-bg.mp4" type="video/mp4" />
