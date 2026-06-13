@@ -21,6 +21,7 @@ interface ContactFormData {
   specialRequests: string;
   flightNumber: string;
   airline: string;
+  companyName: string; // Honeypot field - should remain empty
 }
 
 export default function BookingPage() {
@@ -100,7 +101,8 @@ function BookingPageContent({ service }: { service: Service }) {
     hotelName: '',
     specialRequests: '',
     flightNumber: '',
-    airline: ''
+    airline: '',
+    companyName: '' // Honeypot field - should remain empty
   });
   const [step, setStep] = useState(1); // 1: Details, 2: Confirmation
   const [loading, setLoading] = useState(false);
