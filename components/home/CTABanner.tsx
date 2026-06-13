@@ -26,8 +26,7 @@ export function CTABanner() {
 
   return (
     <section className="py-32 md:py-40 text-white" ref={sectionRef}>
-      <div className="container mx-auto px-6 text-center max-w-4xl">
-        <motion.div style={{ y, opacity }}>
+      <motion.div className="container mx-auto px-6 text-center max-w-4xl" style={{ y, opacity }}>
         <p className="text-sm tracking-[0.3em] uppercase text-white/60 mb-6">
           {t('subtitle')}
         </p>
@@ -96,8 +95,7 @@ export function CTABanner() {
             info@drallseasontravel.com
           </motion.a>
         </div>
-        </motion.div>
-      </div>
+      </motion.div>
     </section>
   );
 }
