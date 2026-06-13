@@ -11,7 +11,6 @@ import { WhyChooseUs } from '@/components/home/WhyChooseUs';
 import { Testimonials } from '@/components/home/Testimonials';
 import { CTABanner } from '@/components/home/CTABanner';
 import { CustomCursor } from '@/components/ui/CustomCursor';
-import { VideoBackground } from '@/components/ui/VideoBackground';
 import { getFeaturedServices } from '@/lib/data/services';
 import { supabaseDb } from '@/lib/supabase/db';
 import { generatePageMetadata, buildLocalBusinessSchema } from '@/lib/seo/metadata';
@@ -145,7 +144,18 @@ export default async function Home({ params }: { params: { locale: string } }) {
       {/* Video Background Section */}
       <div className="relative">
         {/* Fixed Video Background for These 3 Sections */}
-        <VideoBackground src="https://tourplatform-bg-videos.sfo3.cdn.digitaloceanspaces.com/home-bg.mp4" />
+        <div className="absolute inset-0 w-full h-full">
+          <video
+            autoPlay
+            loop
+            muted
+            playsInline
+            className="absolute top-1/2 left-1/2 min-w-full min-h-full w-auto h-auto -translate-x-1/2 -translate-y-1/2"
+          >
+            <source src="https://tourplatform-bg-videos.sfo3.cdn.digitaloceanspaces.com/home-bg.mp4" type="video/mp4" />
+          </video>
+          <div className="absolute inset-0 bg-black/40" />
+        </div>
         
         {/* Content Over Video */}
         <div className="relative z-10">
