@@ -144,7 +144,7 @@ export default async function Home({ params }: { params: { locale: string } }) {
       {/* Video Background Section */}
       <div className="relative min-h-screen">
         {/* Fixed Video Background for These 3 Sections */}
-        <div className="absolute inset-0 w-full h-full overflow-hidden">
+        <div className="absolute inset-0 w-full h-full">
           <video
             autoPlay
             loop
