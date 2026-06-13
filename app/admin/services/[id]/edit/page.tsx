@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/Button';
 import ImageUpload from '@/components/admin/ImageUpload';
 import GalleryUpload from '@/components/admin/GalleryUpload';
 import OptimizedImage from '@/components/ui/OptimizedImage';
-import { updateServiceImages, getServiceImages } from '@/lib/images/service';
+import { getServiceImages } from '@/lib/images/service';
 
 interface ServiceEditPageProps {
   params: {
@@ -50,11 +50,16 @@ export default function ServiceEditPage({ params }: ServiceEditPageProps) {
       setIsSaving(true);
       setError(null);
       
-      const result = await updateServiceImages(
-        serviceId,
-        featuredImage || undefined,
-        galleryImages.length > 0 ? galleryImages : undefined
-      );
+      const response = await fetch('/api/admin/services', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          id: serviceId,
+          featured_image: featuredImage || null,
+          gallery_images: galleryImages,
+        }),
+      });
+      const result = await response.json();
       
       if (result.success) {
         alert('Service images updated successfully!');

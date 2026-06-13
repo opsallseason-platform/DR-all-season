@@ -76,7 +76,7 @@ export default function AdminServicesPage() {
 
   const fetchServices = async () => {
     try {
-      const res = await fetch('/api/admin/services');
+      const res = await fetch('/api/admin/services', { cache: 'no-store' });
       const data = await res.json();
       setServices(Array.isArray(data) ? data : []);
     } catch (e) {

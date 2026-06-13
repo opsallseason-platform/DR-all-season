@@ -1,13 +1,13 @@
 'use client';
 
-import { useState, useMemo, useRef } from 'react';
+import { useState, useMemo, useRef, useCallback, useEffect } from 'react';
 import { Service, filterServices, sortServices, SortOption } from '@/lib/data/services';
 import { SearchBar } from '@/components/tours/SearchBar';
 import { TourFilters } from '@/components/tours/TourFilters';
 import { TourCard } from '@/components/tours/TourCard';
 import { Button } from '@/components/ui/Button';
 import { motion, useInView } from 'framer-motion';
-import { useTranslations } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
 
 interface ToursClientProps {
   initialServices: Service[];
@@ -15,6 +15,8 @@ interface ToursClientProps {
 
 export function ToursClient({ initialServices }: ToursClientProps) {
   const t = useTranslations('Tours');
+  const locale = useLocale();
+  const [services, setServices] = useState(initialServices);
   const [searchQuery, setSearchQuery] = useState('');
   const [sortBy, setSortBy] = useState<SortOption>('featured');
   const [categoryFilter, setCategoryFilter] = useState<'all' | 'tour' | 'excursion'>('all');
@@ -24,8 +26,32 @@ export function ToursClient({ initialServices }: ToursClientProps) {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-50px" });
 
+  const refreshServices = useCallback(async () => {
+    try {
+      const response = await fetch(`/api/services?locale=${locale}`, { cache: 'no-store' });
+      if (!response.ok) return;
+      const data = await response.json();
+      if (Array.isArray(data)) {
+        setServices(data.filter((service) => service.category === 'tour' || service.category === 'excursion'));
+      }
+    } catch {
+      // Keep the last successful service list visible.
+    }
+  }, [locale]);
+
+  useEffect(() => {
+    const interval = window.setInterval(refreshServices, 15000);
+    const refreshOnFocus = () => refreshServices();
+
+    window.addEventListener('focus', refreshOnFocus);
+    return () => {
+      window.clearInterval(interval);
+      window.removeEventListener('focus', refreshOnFocus);
+    };
+  }, [refreshServices]);
+
   const filteredAndSorted = useMemo(() => {
-    let filtered = filterServices(initialServices, {
+    let filtered = filterServices(services, {
       category: categoryFilter,
       search: searchQuery,
     });
@@ -43,7 +69,7 @@ export function ToursClient({ initialServices }: ToursClientProps) {
     }
 
     return sortServices(filtered, sortBy);
-  }, [initialServices, searchQuery, sortBy, categoryFilter, priceRanges]);
+  }, [services, searchQuery, sortBy, categoryFilter, priceRanges]);
 
   const visibleServices = filteredAndSorted.slice(0, visibleCount);
   const hasMore = visibleCount < filteredAndSorted.length;

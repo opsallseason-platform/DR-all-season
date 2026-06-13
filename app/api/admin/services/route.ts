@@ -1,6 +1,18 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { supabaseDb } from '@/lib/supabase/db';
+import { revalidatePath } from 'next/cache';
 import crypto from 'crypto';
+
+export const dynamic = 'force-dynamic';
+
+function revalidateServicePages() {
+  for (const locale of ['en', 'es']) {
+    revalidatePath(`/${locale}`);
+    revalidatePath(`/${locale}/tours`, 'layout');
+    revalidatePath(`/${locale}/transfers`, 'layout');
+    revalidatePath(`/${locale}/booking`);
+  }
+}
 
 // GET all services with full details for admin
 export async function GET() {
@@ -12,7 +24,9 @@ export async function GET() {
       .order('title_en');
 
     if (error) throw error;
-    return NextResponse.json(data || []);
+    return NextResponse.json(data || [], {
+      headers: { 'Cache-Control': 'no-store' },
+    });
   } catch (error: any) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
@@ -87,6 +101,7 @@ export async function POST(request: NextRequest) {
       if (tierError) throw tierError;
     }
 
+    revalidateServicePages();
     return NextResponse.json({ success: true, id });
   } catch (error: any) {
     return NextResponse.json({ error: error.message }, { status: 500 });
@@ -175,6 +190,7 @@ export async function PATCH(request: NextRequest) {
       }
     }
 
+    revalidateServicePages();
     return NextResponse.json({ success: true });
   } catch (error: any) {
     return NextResponse.json({ error: error.message }, { status: 500 });
@@ -197,6 +213,7 @@ export async function DELETE(request: NextRequest) {
       .eq('id', id);
 
     if (error) throw error;
+    revalidateServicePages();
     return NextResponse.json({ success: true });
   } catch (error: any) {
     return NextResponse.json({ error: error.message }, { status: 500 });

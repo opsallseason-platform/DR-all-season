@@ -6,10 +6,11 @@ import { TransferCard } from '@/components/transfers/TransferCard';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { useRef, useEffect, useState } from 'react';
 import { Service } from '@/types';
-import { useTranslations } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
 
 export default function TransfersPageClient() {
   const t = useTranslations('Transfers');
+  const locale = useLocale();
   const [transfers, setTransfers] = useState<Service[]>([]);
   const heroRef = useRef(null);
   const { scrollYProgress } = useScroll({
@@ -23,15 +24,23 @@ export default function TransfersPageClient() {
   useEffect(() => {
     async function loadTransfers() {
       try {
-        const response = await fetch('/api/transfers');
+        const response = await fetch(`/api/transfers?locale=${locale}`, { cache: 'no-store' });
         const data = await response.json();
         setTransfers(Array.isArray(data) ? data : []);
       } catch {
-        setTransfers([]);
+        // Keep the last successful service list visible.
       }
     }
+
     loadTransfers();
-  }, []);
+    const interval = window.setInterval(loadTransfers, 15000);
+    window.addEventListener('focus', loadTransfers);
+
+    return () => {
+      window.clearInterval(interval);
+      window.removeEventListener('focus', loadTransfers);
+    };
+  }, [locale]);
 
   return (
     <div className="relative">
