@@ -213,7 +213,7 @@ export default function ChatWidget() {
 
       {/* Chat Window */}
       {isOpen && (
-        <div className="fixed bottom-6 right-6 w-full max-w-md h-[600px] bg-white rounded-2xl shadow-2xl flex flex-col z-50 border border-gray-100 overflow-hidden">
+        <div className="fixed bottom-0 right-0 sm:bottom-6 sm:right-6 w-full sm:w-[calc(100%-3rem)] max-w-md h-[100vh] sm:h-[600px] bg-white sm:rounded-2xl shadow-2xl flex flex-col z-50 border border-gray-100 overflow-hidden">
           {/* Chat Header - Premium Gradient */}
           <div className="bg-gradient-to-r from-blue-600 via-blue-700 to-indigo-700 text-white p-5 flex justify-between items-center">
             <div className="flex items-center space-x-3">
