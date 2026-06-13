@@ -145,7 +145,10 @@ export default async function Home({ params }: { params: { locale: string } }) {
       {/* Video Background Section */}
       <div className="relative min-h-screen">
         {/* Fixed Video Background for These 3 Sections */}
-        <VideoBackgroundMobile src="https://tourplatform-bg-videos.sfo3.cdn.digitaloceanspaces.com/home-bg.mp4?v=mobile-safe-20260613" />
+        <VideoBackgroundMobile
+          hevcSrc="https://tourplatform-bg-videos.sfo3.cdn.digitaloceanspaces.com/new-videos/home-bg.mp4?v=hevc-20260613"
+          src="https://tourplatform-bg-videos.sfo3.cdn.digitaloceanspaces.com/home-bg.mp4?v=mobile-safe-20260613"
+        />
         
         {/* Content Over Video */}
         <div className="relative z-10">

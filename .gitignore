@@ -17,6 +17,9 @@
 .DS_Store
 *.pem
 
+# large local video source files uploaded to DigitalOcean Spaces
+/public/images/videos/new-videos/
+
 # debug
 npm-debug.log*
 yarn-debug.log*

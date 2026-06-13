@@ -1,6 +1,6 @@
 /**
  * UPLOAD VIDEOS TO DIGITALOCEAN SPACES
- * Uploads background videos from public/images/videos to your Spaces bucket
+ * Uploads background videos from public/images/videos/new-videos to your Spaces bucket
  */
 
 import { S3 } from '@aws-sdk/client-s3';
@@ -22,7 +22,8 @@ const spacesClient = new S3({
 });
 
 const bucketName = process.env.DO_SPACES_BUCKET || 'tourplatform-bg-videos';
-const videosDir = path.join(process.cwd(), 'public/images/videos/compressed');
+const videosDir = path.join(process.cwd(), 'public/images/videos/new-videos');
+const keyPrefix = 'new-videos';
 
 const videos = [
   'home-bg.mp4',
@@ -34,6 +35,7 @@ const videos = [
 
 async function uploadVideo(filename: string) {
   const filePath = path.join(videosDir, filename);
+  const objectKey = `${keyPrefix}/${filename}`;
   
   if (!fs.existsSync(filePath)) {
     console.log(`⚠️  ${filename} not found, skipping...`);
@@ -50,7 +52,7 @@ async function uploadVideo(filename: string) {
       client: spacesClient,
       params: {
         Bucket: bucketName,
-        Key: filename,
+        Key: objectKey,
         Body: fileStream,
         ContentType: 'video/mp4',
         CacheControl: 'public, max-age=300, must-revalidate',
@@ -60,7 +62,7 @@ async function uploadVideo(filename: string) {
 
     await upload.done();
     
-    const videoUrl = `${process.env.DO_SPACES_CDN_URL || process.env.DO_SPACES_ENDPOINT}/${filename}`;
+    const videoUrl = `${process.env.DO_SPACES_CDN_URL || process.env.DO_SPACES_ENDPOINT}/${objectKey}`;
     console.log(`✅ ${filename} uploaded successfully!`);
     console.log(`   URL: ${videoUrl}\n`);
   } catch (error) {

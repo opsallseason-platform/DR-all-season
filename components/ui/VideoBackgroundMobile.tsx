@@ -2,7 +2,12 @@
 
 import { useEffect, useRef } from 'react';
 
-export function VideoBackgroundMobile({ src }: { src: string }) {
+type VideoBackgroundMobileProps = {
+  src: string;
+  hevcSrc?: string;
+};
+
+export function VideoBackgroundMobile({ src, hevcSrc }: VideoBackgroundMobileProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
@@ -28,9 +33,11 @@ export function VideoBackgroundMobile({ src }: { src: string }) {
         loop
         muted
         playsInline
+        webkit-playsInline
         preload="auto"
         className="w-full h-full object-cover"
       >
+        {hevcSrc ? <source src={hevcSrc} type='video/mp4; codecs="hvc1"' /> : null}
         <source src={src} type="video/mp4" />
       </video>
       <div className="absolute inset-0 bg-black/40" />
