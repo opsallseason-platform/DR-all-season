@@ -76,11 +76,18 @@ export default function AdminServicesPage() {
 
   const fetchServices = async () => {
     try {
-      const res = await fetch('/api/admin/services', { cache: 'no-store' });
+      const res = await fetch(`/api/admin/services?t=${Date.now()}`, {
+        cache: 'no-store',
+        credentials: 'same-origin',
+      });
       const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.error || 'Failed to load services');
+      }
       setServices(Array.isArray(data) ? data : []);
     } catch (e) {
       console.error(e);
+      setMessage({ type: 'error', text: e instanceof Error ? e.message : 'Failed to load services' });
     } finally {
       setLoading(false);
     }
@@ -139,13 +146,21 @@ export default function AdminServicesPage() {
       const res = await fetch('/api/admin/services', {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'same-origin',
         body: JSON.stringify(payload),
       });
       const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.error || 'Failed to update');
+      }
       if (data.success) {
         setMessage({ type: 'success', text: 'Service updated!' });
+        if (data.service) {
+          setServices(prev => prev.map(service => service.id === data.service.id ? data.service : service));
+        } else {
+          await fetchServices();
+        }
         setEditingId(null);
-        fetchServices();
       } else {
         setMessage({ type: 'error', text: data.error || 'Failed to update' });
       }
@@ -168,6 +183,7 @@ export default function AdminServicesPage() {
       const res = await fetch('/api/admin/services', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'same-origin',
         body: JSON.stringify({
           ...newService,
           price_per_person: packages[0]?.price_per_person || Number(newService.price_per_person) || 0,
@@ -178,11 +194,18 @@ export default function AdminServicesPage() {
         }),
       });
       const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.error || 'Failed to create');
+      }
       if (data.success) {
         setMessage({ type: 'success', text: 'Service created!' });
         setShowAddForm(false);
         setNewService({ title_en: '', title_es: '', description_en: '', description_es: '', category: 'excursion', featured_image: '', duration_minutes: 240, price_per_person: '', child_price: '', featured: false, is_per_person: true, child_price_enabled: true, has_open_bar: false, base_capacity: 20, extra_person_price: '', inclusions_en: '', exclusions_en: '', pricing_packages: [{label: '', price: '', child_price: ''}] });
-        fetchServices();
+        if (data.service) {
+          setServices(prev => [data.service, ...prev]);
+        } else {
+          await fetchServices();
+        }
       } else {
         setMessage({ type: 'error', text: data.error || 'Failed to create' });
       }
@@ -197,11 +220,21 @@ export default function AdminServicesPage() {
   const deleteService = async (id: string, name: string) => {
     if (!confirm(`Deactivate "${name}"? It will be hidden from the public site.`)) return;
     try {
-      const res = await fetch(`/api/admin/services?id=${id}`, { method: 'DELETE' });
+      const res = await fetch(`/api/admin/services?id=${id}`, {
+        method: 'DELETE',
+        credentials: 'same-origin',
+      });
       const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.error || 'Failed to deactivate');
+      }
       if (data.success) {
         setMessage({ type: 'success', text: 'Service deactivated' });
-        fetchServices();
+        if (data.service) {
+          setServices(prev => prev.map(service => service.id === data.service.id ? data.service : service));
+        } else {
+          await fetchServices();
+        }
       }
     } catch (e: any) {
       setMessage({ type: 'error', text: e.message });
@@ -214,10 +247,21 @@ export default function AdminServicesPage() {
       const res = await fetch('/api/admin/services', {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'same-origin',
         body: JSON.stringify({ id, status: 'active' }),
       });
       const data = await res.json();
-      if (data.success) { setMessage({ type: 'success', text: 'Reactivated!' }); fetchServices(); }
+      if (!res.ok) {
+        throw new Error(data.error || 'Failed to reactivate');
+      }
+      if (data.success) {
+        setMessage({ type: 'success', text: 'Reactivated!' });
+        if (data.service) {
+          setServices(prev => prev.map(service => service.id === data.service.id ? data.service : service));
+        } else {
+          await fetchServices();
+        }
+      }
     } catch (e: any) { setMessage({ type: 'error', text: e.message }); }
     setTimeout(() => setMessage(null), 3000);
   };

@@ -34,6 +34,17 @@ function unauthorized() {
   return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 }
 
+async function getAdminService(id: string) {
+  const { data, error } = await supabaseAdmin
+    .from('services')
+    .select('*, pricing_tiers(*)')
+    .eq('id', id)
+    .maybeSingle();
+
+  if (error) throw error;
+  return data;
+}
+
 // GET all services with full details for admin
 export async function GET(request: NextRequest) {
   try {
@@ -125,8 +136,9 @@ export async function POST(request: NextRequest) {
       if (tierError) throw tierError;
     }
 
+    const service = await getAdminService(id);
     revalidateServicePages();
-    return NextResponse.json({ success: true, id });
+    return NextResponse.json({ success: true, id, service });
   } catch (error: any) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
@@ -226,8 +238,9 @@ export async function PATCH(request: NextRequest) {
       }
     }
 
+    const service = await getAdminService(id);
     revalidateServicePages();
-    return NextResponse.json({ success: true });
+    return NextResponse.json({ success: true, service });
   } catch (error: any) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
@@ -256,8 +269,9 @@ export async function DELETE(request: NextRequest) {
     if (!updatedService) {
       return NextResponse.json({ error: 'Service not found or update was not applied' }, { status: 404 });
     }
+    const service = await getAdminService(id);
     revalidateServicePages();
-    return NextResponse.json({ success: true });
+    return NextResponse.json({ success: true, service });
   } catch (error: any) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
