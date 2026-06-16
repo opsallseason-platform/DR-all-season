@@ -20,13 +20,6 @@ export interface Service {
   featured: boolean;
 }
 
-/** Promo pricing overrides by slug: { slug: { price, originalPrice } } */
-const PROMO_PRICING: Record<string, { price: number; originalPrice: number }> = {
-  'airport-bavaro-punta-cana': { price: 18, originalPrice: 33 },
-  'airport-cabeza-de-toro': { price: 18, originalPrice: 33 },
-  'airport-cap-cana': { price: 18, originalPrice: 33 },
-};
-
 /** Returns true for network-level errors (DNS, timeout, connection refused) */
 function isNetworkError(error: any): boolean {
   const msg = error?.message || error?.details || '';
@@ -49,7 +42,6 @@ function mapService(service: any, locale: string = 'en'): Service {
 
   const useEs = locale === 'es';
   const slug = service.slug_en;
-  const promo = PROMO_PRICING[slug];
 
   // Get child price from pricing_tiers if available
   const adultPrice = pricing ? Number(pricing.price_per_person) : 0;
@@ -75,13 +67,12 @@ function mapService(service: any, locale: string = 'en'): Service {
     slug,
     description: useEs ? (service.description_es || service.description_en) : service.description_en,
     category: service.category,
-    price: promo ? promo.price : adultPrice,
-    adultPrice: promo ? promo.price : adultPrice,
-    childPrice: childPriceEnabled ? (promo ? Math.round(promo.price * 0.7) : childPrice) : 0,
+    price: adultPrice,
+    adultPrice,
+    childPrice: childPriceEnabled ? childPrice : 0,
     isPerPerson,
     childPriceEnabled,
     hasOpenBar: service.has_open_bar ?? false,
-    originalPrice: promo ? promo.originalPrice : undefined,
     pricingPackages,
     extraPersonPrice: service.extra_person_price ? Number(service.extra_person_price) : undefined,
     duration: durationDisplay,

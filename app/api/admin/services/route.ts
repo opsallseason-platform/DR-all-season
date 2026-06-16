@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { supabaseDb } from '@/lib/supabase/db';
+import { supabaseAdmin } from '@/lib/supabase/admin';
 import { revalidatePath } from 'next/cache';
 import crypto from 'crypto';
 
@@ -14,10 +14,32 @@ function revalidateServicePages() {
   }
 }
 
+async function authorizeAdmin(request: NextRequest) {
+  const token = request.cookies.get('admin_session')?.value;
+  if (!token) return false;
+
+  const { data, error } = await supabaseAdmin
+    .from('admin_sessions')
+    .select('id, expires_at, admin_users!inner(is_active)')
+    .eq('token', token)
+    .gt('expires_at', new Date().toISOString())
+    .maybeSingle();
+
+  if (error || !data) return false;
+  const admin = Array.isArray(data.admin_users) ? data.admin_users[0] : data.admin_users;
+  return admin?.is_active === true;
+}
+
+function unauthorized() {
+  return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+}
+
 // GET all services with full details for admin
-export async function GET() {
+export async function GET(request: NextRequest) {
   try {
-    const { data, error } = await supabaseDb
+    if (!(await authorizeAdmin(request))) return unauthorized();
+
+    const { data, error } = await supabaseAdmin
       .from('services')
       .select('*, pricing_tiers(*)')
       .order('category')
@@ -35,11 +57,13 @@ export async function GET() {
 // POST create a new service
 export async function POST(request: NextRequest) {
   try {
+    if (!(await authorizeAdmin(request))) return unauthorized();
+
     const body = await request.json();
     const id = crypto.randomUUID();
     const now = new Date().toISOString();
 
-    const { data, error } = await supabaseDb
+    const { data, error } = await supabaseAdmin
       .from('services')
       .insert({
         id,
@@ -82,12 +106,12 @@ export async function POST(request: NextRequest) {
         child_price: pkg.child_price != null ? Number(pkg.child_price) : null,
         label: pkg.label || null,
       }));
-      const { error: tierError } = await supabaseDb
+      const { error: tierError } = await supabaseAdmin
         .from('pricing_tiers')
         .insert(tiers);
       if (tierError) throw tierError;
     } else if (body.price_per_person) {
-      const { error: tierError } = await supabaseDb
+      const { error: tierError } = await supabaseAdmin
         .from('pricing_tiers')
         .insert({
           id: crypto.randomUUID(),
@@ -111,6 +135,8 @@ export async function POST(request: NextRequest) {
 // PATCH update an existing service
 export async function PATCH(request: NextRequest) {
   try {
+    if (!(await authorizeAdmin(request))) return unauthorized();
+
     const body = await request.json();
     const { id, price_per_person, child_price, child_price_enabled, pricing_packages, extra_person_price, ...updateFields } = body;
 
@@ -127,20 +153,26 @@ export async function PATCH(request: NextRequest) {
     if (extra_person_price !== undefined) {
       (serviceUpdates as any).extra_person_price = extra_person_price === '' || extra_person_price === null ? null : Number(extra_person_price);
     }
-    const { error } = await supabaseDb
+    const { data: updatedService, error } = await supabaseAdmin
       .from('services')
       .update({ ...serviceUpdates, updated_at: now })
-      .eq('id', id);
+      .eq('id', id)
+      .select('id')
+      .maybeSingle();
 
     if (error) throw error;
+    if (!updatedService) {
+      return NextResponse.json({ error: 'Service not found or update was not applied' }, { status: 404 });
+    }
 
     // Update pricing tiers
     if (pricing_packages && pricing_packages.length > 0) {
       // Delete existing tiers and re-create
-      await supabaseDb
+      const { error: deleteTierError } = await supabaseAdmin
         .from('pricing_tiers')
         .delete()
         .eq('service_id', id);
+      if (deleteTierError) throw deleteTierError;
 
       const tiers = pricing_packages.map((pkg: any) => ({
         id: crypto.randomUUID(),
@@ -151,33 +183,36 @@ export async function PATCH(request: NextRequest) {
         child_price: pkg.child_price != null ? Number(pkg.child_price) : null,
         label: pkg.label || null,
       }));
-      await supabaseDb
+      const { error: insertTierError } = await supabaseAdmin
         .from('pricing_tiers')
         .insert(tiers);
+      if (insertTierError) throw insertTierError;
     } else if (price_per_person !== undefined) {
       // Single pricing tier (backward compat)
       // Check if tier exists
-      const { data: existingTier } = await supabaseDb
+      const { data: existingTier, error: existingTierError } = await supabaseAdmin
         .from('pricing_tiers')
         .select('id')
         .eq('service_id', id)
         .limit(1)
         .maybeSingle();
+      if (existingTierError) throw existingTierError;
 
       const childPricingEnabled = child_price_enabled ?? updateFields.category !== 'transfer';
       const adultPrice = Number(price_per_person) || 0;
       const calculatedChildPrice = childPricingEnabled ? (Number(child_price) || Math.round(adultPrice * 0.7)) : null;
 
       if (existingTier) {
-        await supabaseDb
+        const { error: tierUpdateError } = await supabaseAdmin
           .from('pricing_tiers')
           .update({ 
             price_per_person: adultPrice,
             child_price: calculatedChildPrice
           })
           .eq('id', existingTier.id);
+        if (tierUpdateError) throw tierUpdateError;
       } else {
-        await supabaseDb
+        const { error: tierInsertError } = await supabaseAdmin
           .from('pricing_tiers')
           .insert({
             id: crypto.randomUUID(),
@@ -187,6 +222,7 @@ export async function PATCH(request: NextRequest) {
             price_per_person: adultPrice,
             child_price: calculatedChildPrice,
           });
+        if (tierInsertError) throw tierInsertError;
       }
     }
 
@@ -200,6 +236,8 @@ export async function PATCH(request: NextRequest) {
 // DELETE a service (sets status to inactive)
 export async function DELETE(request: NextRequest) {
   try {
+    if (!(await authorizeAdmin(request))) return unauthorized();
+
     const { searchParams } = new URL(request.url);
     const id = searchParams.get('id');
 
@@ -207,12 +245,17 @@ export async function DELETE(request: NextRequest) {
       return NextResponse.json({ error: 'Service ID required' }, { status: 400 });
     }
 
-    const { error } = await supabaseDb
+    const { data: updatedService, error } = await supabaseAdmin
       .from('services')
       .update({ status: 'inactive', updated_at: new Date().toISOString() })
-      .eq('id', id);
+      .eq('id', id)
+      .select('id')
+      .maybeSingle();
 
     if (error) throw error;
+    if (!updatedService) {
+      return NextResponse.json({ error: 'Service not found or update was not applied' }, { status: 404 });
+    }
     revalidateServicePages();
     return NextResponse.json({ success: true });
   } catch (error: any) {
